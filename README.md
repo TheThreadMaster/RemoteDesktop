@@ -2,147 +2,93 @@
 
 RemoteDesktop is a Java-based project for providing remote desktop functionality. This repository contains the source code (100% Java) and supporting files for building, running, and developing the RemoteDesktop application.
 
-
-
 ## Summary
 
-RemoteDesktop aims to enable remote screen viewing and interaction between machines, implemented in Java for portability. The repository currently contains Java source code; concrete features, protocols, and components should be documented below as you complete or confirm them.
+RemoteDesktop enables remote screen viewing and basic interaction between machines, implemented in Java for portability.
 
-## Suggested / Typical Features
+## Implemented Features
 
-- Remote screen streaming (server captures screen, client displays)
-- Remote control (mouse + keyboard forwarding)
-- Secure connection (TLS / encrypted channel)
-- Authentication (password, token, or certificate-based)
-- File transfer between client and server
-- Multi-platform support (Windows, macOS, Linux) via Java
-- Optional: clipboard sync, session logging, connection management UI
+This section lists the features that are confirmed implemented in the codebase:
 
-(Only list the features actually implemented in this repo — edit this section to match.)
+- **Remote screen streaming**: The server captures the screen, encodes it as a JPEG image, and sends it to the client.
+- **Basic remote control (mouse & keyboard)**:
+  - The client can send mouse click events, mouse movements, and keyboard key presses to the host.
+  - The host receives these commands and injects them via the Java Robot API.
+- **Single connection (one client to one server at a time)**: The current implementation accepts a single client connection.
+
+**Not implemented**
+- No TLS or encrypted channel.
+- No authentication (any client can connect).
+- No file transfer.
+- No clipboard synchronization.
+- No session logging.
+- No multi-session/connection management.
+- No GUI for connection management.
+- No cross-platform packaging/installer.
+- No flexible configuration (port is hardcoded).
+- No authorization or access control.
 
 ## Requirements
 
-- Java Development Kit (JDK) 11 or newer (adjust if the project targets a different version)
-- Build tool: Maven or Gradle (see project for which one is used)
-- OS: cross-platform (Windows / macOS / Linux) — verify platform support
+- Java Development Kit (JDK) 11 or newer.
+- Manual compilation or using Java command-line tools.
+- OS: Should work on Windows, macOS, and Linux (tested only where Java's AWT Robot and Swing APIs are available).
 
 ## Build
 
-Replace the examples below with the appropriate commands for your build tool and project structure.
+To compile both server and client components:
 
-Using Maven:
 ```bash
-# from repo root
-mvn -v
-mvn clean package
-# produced artifact: target/RemoteDesktop-<version>.jar
+# Example for simple javac build (adjust if files are in packages):
+javac RemoteHost.java
+javac RemoteClient.java
 ```
-
-Using Gradle:
-```bash
-# from repo root
-./gradlew -v
-./gradlew build
-# produced artifact: build/libs/RemoteDesktop-<version>.jar
-```
-
-If you don't use Maven or Gradle, replace the above with your actual build steps.
 
 ## Run
 
-Example commands — update to match your actual artifact name and main classes.
-
-Run server:
+Start the server (host) on the remote machine:
 ```bash
-java -jar target/RemoteDesktop-server.jar --mode=server --port=5000
-# or if a main class:
-# java -cp target/classes com.example.remotedesktop.server.ServerMain --port 5000
+java RemoteHost
 ```
 
-Run client:
+Start the client and connect to the host's IP address:
 ```bash
-java -jar target/RemoteDesktop-client.jar --mode=client --host=server-host --port=5000
-# or:
-# java -cp target/classes com.example.remotedesktop.client.ClientMain --host <host> --port 5000
+java RemoteClient
 ```
-
-Add any CLI options, configuration file locations, or GUI launch instructions here.
-
-## Configuration
-
-- Config file location: config/application.properties (example)
-- Common settings:
-  - server.port=5000
-  - server.bindAddress=0.0.0.0
-  - security.tls.enabled=true
-  - auth.method=password|token|cert
-
-Document the real config keys and their default values for your project.
+You will be prompted for the Host IP Address.
 
 ## Usage
 
-1. Start the server on the remote machine.
-2. Start the client and connect to the server's host and port.
-3. Authenticate using the configured method.
-4. Use the client UI or CLI to view and control the remote desktop.
-
-Include screenshots or a short GIF showing a client connected to a server to make onboarding easier.
+1. Start the server on the remote machine (host).
+2. Start the client, provide the server's IP, and connect.
+3. The client window will display the remote screen, and you can control the host using your mouse and keyboard (basic input events are supported).
 
 ## Architecture (brief)
 
-This section should describe the high-level components:
-- Server: captures screen, handles input injection, manages sessions.
-- Client: receives screen frames, sends input events, handles UI.
-- Network layer: protocol used (custom TCP, WebSocket, RDP/VNC-compatible, etc.)
-- Security: TLS, authentication flow, encryption of streams.
-
-Fill in with diagrams or more detailed descriptions when available.
-
-## Testing
-
-- Unit tests: run with mvn test or ./gradlew test
-- Integration tests: describe any test harnesses or manual test steps
-- Manual QA checklist: performance, latency, input fidelity, multi-monitor support
-
-## Development
-
-- Code style: (e.g. Google Java Style) — add linters or formatter configuration
-- IDE: recommended IntelliJ IDEA / Eclipse settings
-- How to run locally in dev mode:
-  - Start server with debug logging enabled
-  - Run client from IDE with breakpoints
+- **Server (RemoteHost):** Captures the full screen, streams it as images over TCP, and listens for input commands (mouse/keyboard) from the client to execute on the host.
+- **Client (RemoteClient):** Connects to the server, receives and displays the remote screen, sends user mouse and keyboard events back to the host.
+- **Network:** Custom protocol, plain TCP sockets using Java Object streams.
+- **Security:** None (no encryption, no authentication).
 
 ## Contributing
 
-Contributions are welcome. Please:
-1. Fork the repository.
-2. Create a feature branch: git checkout -b feat/short-description
-3. Add tests for new functionality.
-4. Open a pull request describing your changes.
-
-Add labels, issue templates, and a CONTRIBUTING.md file as needed.
+See guidelines in the original README. Please discuss major changes via issues before pull requests.
 
 ## License
 
-Add a LICENSE file to indicate the project's license (MIT, Apache-2.0, GPL, etc.). If you're unsure, consider using MIT or Apache-2.0 for permissive licensing.
-
-## Security
-
-If the project handles remote access, include a SECURITY.md describing:
-- Responsible disclosure policy
-- How to report vulnerabilities
-- Recommended secure deployment practices (e.g., require TLS, do not expose server port to public internet without VPN/SSH tunnel)
+No LICENSE file provided. The code is not currently licensed for open-source use.
 
 ## Roadmap / TODO
 
-- Add automated tests for network reliability
-- Implement secure authentication and session management
-- Add GUI improvements and accessibility options
-- Add packaging (native installers)
+- Add authentication and encrypted connection (TLS/SSL).
+- Improve input fidelity (mouse buttons, key combinations, etc.).
+- Add file transfer, clipboard sync, and multi-session support.
+- Implement proper configuration for port and host settings.
+- Enhance GUI and error handling.
 
 ## Contact
 
-Repository: https://github.com/TheThreadMaster/RemoteDesktop
+Repository: https://github.com/TheThreadMaster/RemoteDesktop  
 Maintainer: TheThreadMaster
 
 ---
