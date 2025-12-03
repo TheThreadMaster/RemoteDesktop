@@ -2,7 +2,7 @@
 
 RemoteDesktop is a Java-based project for providing remote desktop functionality. This repository contains the source code (100% Java) and supporting files for building, running, and developing the RemoteDesktop application.
 
-> NOTE: This README is a template and summary based on the repository metadata. Please replace placeholders (build tool, exact run commands, screenshots, license) with real values from your project.
+
 
 ## Summary
 
